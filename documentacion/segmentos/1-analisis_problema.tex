@@ -1,0 +1,87 @@
+% !TeX spellcheck = es_ES
+%analizar los puntos a tratar en la evaluación, considerando estos como
+%requerimientos de un proyecto de software o como las preguntas o situaciones a resolver
+%en un proceso de indagatoria (investigación).
+
+%metodologías o medios necesarios para brindar una posible solución o abordaje al problema.
+
+%diagramas de conceptos, técnicas, herramientas, o ejemplos prácticos de situaciones en donde se visualice la problemática o situación
+%planteada, evitando a toda costa la utilización de descripciones o prosa confusa y poco
+%relevante sobre el punto a tratar.
+
+\section{Análisis del problema}
+\subsection{Herramientas}
+
+Para las rutas de buses se usarán los geoservicios que brinda aresep, esto según como lo indica el requerimiento del proyecto para luego ser cargados a la base de datos, por lo que se debe buscar una herramienta que permita facilitar el proceso, de igual forma con la calles de alguna ciudad de Costa Rica, en este caso con OpenStreetMap.
+
+En cuanto a la visualización e interacción de la información a nivel del cliente, se planea utilizar leaflet y svelte como framework con nodejs y expressjs al lado del backend debido a su portabilidad y facilidad para configurar para poder tenerlo en ejecución.
+
+\subsection{Limitaciones técnicas}
+Para entrar en materia se debe comprender las limitaciones del servidor donde se encuentra alojada la base de datos solamente tiene 4Gb de ram por lo que no se puede pensar en tener más de una ciudad en calles para hacer el análisis (puesto que podría llegar a superar las diez mil calles); debido a que la comparación de intersección o cercanía entre geometrías es una operación de N calles por M rutas.
+
+Por lo anteriormente mencionado se debe también en recortar tiempo o procesamientos, para esto se puede usar un cursor para las calles y cada que encuentra una ruta cerca deje de realizar las comparaciones, por ejemplo:
+
+\begin{lstlisting}
+	FOR calle IN calles LOOP
+		Insert into tabla_intermedia
+		SELECT calle.id FROM aresep ar
+			WHERE ST_DWITHIN(ar.geom,calle.geom,distancia)
+			LIMIT 1;
+	END LOOP;
+\end{lstlisting}
+
+El problema con lo anterior es que no estaría usando el indice y no existiría una relación calle-ruta, por lo que otra alternativa sería aplicar el cursor a la tabla del aresep (filtrado) y que a pesar de que usa el indice y se podría hacer fácilmente la relación $calle\longleftrightarrow ruta\longleftrightarrow parada$, se estaría ejecutando el análisis sobre todas las rutas y calles (ya filtradas); ejemplo de código:
+
+\begin{lstlisting}
+	FOR rutas IN rutas_filtradas LOOP
+	Insert into tabla_intermedia
+	SELECT id,ruta.id FROM calles
+		WHERE filtado_en_calle
+			AND ST_DWITHIN(ar.geom,calle.geom,distancia);
+	END LOOP;
+\end{lstlisting}
+
+\hfill
+
+Con el código anterior se permitiría tener la siguiente estructura:
+
+\begin{center}
+	\includegraphics[scale=.65]{imagenes/diagram_db.png}
+\end{center}
+
+\break
+\subsection{Colisión e indices}
+
+Para determinar de forma más rápida se debe pensar en una forma que permita hacer una análisis rápido y de bajo costo que permita descartar las calles que no pasan por las rutas del ARESEP, por ejemplo un bounding box que encasille las rutas y para luego con solo una geometría descartar las rutas (lineas negras).
+
+\begin{center}
+	\includegraphics[scale=.4]{imagenes/colisiones.png}	
+\end{center}
+
+\subsection{Creación de la topología}
+En cuanto a la creación de la topología se debe plantear la creación de los vértices solamente por las calles por las cuales pasan las rutas:
+
+\begin{lstlisting}
+	SELECT pgr_createTopology('tabla',dist,'geom','id',
+	rows_where:='(SELECT true from aresep_calle ac
+				where ac.calle_id=id)',
+	clean:=true);
+\end{lstlisting}
+
+\subsection{Ruta más corta}
+Para la ruta más corta hay 2 opciones:
+\myEnumerate{
+	Marcar inicio y destino y luego marcar las paradas por donde se pasa.?
+	Recopilar todas las paradas por donde pasan las rutas del ARESEP y en base a esto ejecutar múltiples dijkstras del inicio al punto b,c,d hasta el destino.
+}
+
+Ejemplo del punto 2:
+
+
+\begin{center}
+	\includegraphics[scale=.4]{imagenes/dijkstra.png}	
+\end{center}
+
+La ruta más corta de $a\rightarrow b$ es $a\rightarrow d\rightarrow b$ (linea verde), pero la ruta del ARESEP (rojo) de $a\rightarrow b$ no pasa por d; por lo que en este caso sería un dijkstra de $a \rightarrow c$ y luego de $c\rightarrow b$.
+
+\newpage

@@ -1,0 +1,8 @@
+#mapid {
+  height: 700px;
+}
+
+html{
+  background: radial-gradient(rgb(213, 224, 255), rgb(165, 165, 165));
+  height: 100%;
+}

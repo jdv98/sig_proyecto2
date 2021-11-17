@@ -1,0 +1,9 @@
+% !TeX spellcheck = es_ES
+\section{Solución del problema}
+
+
+%https://gis.stackexchange.com/questions/374091/when-to-use-gist-and-when-to-use-sp-gist-index
+%https://blog.crunchydata.com/blog/the-many-spatial-indexes-of-postgis
+En cuanto a los \textbf{indices} en las tablas se tienen a GIST y SPGIST; según el usuario \textbf{geozelot} menciona que SPGIST necesita menos espacio que que GIST por lo que es algo a considerar además \textbf{PAUL RAMSEY} menciona  que SPGIST supera a GIST cuando se procesan datos que no se superponen sobre otros (caso de las calles), por lo que para las calles se estaría utilizando SPGIST y para las rutas del ARESEP que suelen pasar varias por el mismo punto, se estaría utilizando GIST.
+
+\newpage

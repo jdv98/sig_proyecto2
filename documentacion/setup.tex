@@ -1,0 +1,72 @@
+
+
+%%Cover page
+\makeatletter
+\long\def\campus#1{\long\def\@campus{#1}}
+
+\renewcommand{\maketitle}{	
+	\check@author
+	\begin{titlepage}
+		\centering
+		\includegraphics[scale=0.3]{imagenes/tec.png}\\
+		\vfill
+		{\large \displayaffiliations\par}
+		\vfill
+		{\large \@title \par}
+		{\@shorttitle  \par}
+		\vfill
+		{\scshape\large Estudiantes: \par}
+		{\large \displayauthors \par}
+		\vfill
+		{\large \scshape Sede \@campus \par}
+		{\large \@duedate \par}
+	\end{titlepage}
+	\newpage
+}
+\makeatother
+
+
+\newcommand{\paraphrase}[3]{
+	\textcite{#1}#3 (#2)
+}
+
+\makeatletter
+\renewenvironment*{blockquote}{%
+	\setlength{\leftmargini}{1in}\csq@getcargs{\csq@bquote{}{}}
+}
+\makeatother
+\SetCiteCommand{\textcite}
+\SetBlockThreshold{39}
+
+\setlength{\parindent}{0.5in}
+\renewcommand{\baselinestretch}{2} %%interlineado
+
+
+\newcommand{\myItem}[1]{\item #1}
+\newcommand{\myRow}[1]{#1\\\hline}
+
+\NewDocumentCommand \myItemize{ > { \SplitList { ? } } m }{
+	\begin{itemize}
+		\ProcessList{#1}{\myItem}
+	\end{itemize}
+}
+
+\NewDocumentCommand \myEnumerate{ > { \SplitList { ? } } m }{
+	\begin{enumerate}
+		\ProcessList{#1}{\myItem}
+	\end{enumerate}
+}
+
+\newcommand{\subsectionInList}[1]{
+\addcontentsline{toc}{subsection}{#1} \textbf{#1}
+}
+
+\NewDocumentCommand{\resultados}{ > { \SplitList { ? } } m }{
+\begin{center}
+	\begin{tabularx}{\textwidth}{|X|c|X|}
+		\hline
+		Requerimiento&Estado&Observaciones\\\hline
+		\ProcessList{#1}{\myRow}
+	\end{tabularx}
+\end{center}
+}

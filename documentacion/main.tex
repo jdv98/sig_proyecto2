@@ -1,0 +1,58 @@
+% !TeX spellcheck = es_ES
+\documentclass[american,stu,biblatex,12pt,a4paper]{apa7}
+\usepackage[autostyle,thresholdtype=words]{csquotes}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{xparse}
+\usepackage{amsmath,amsfonts,amssymb,relsize}
+\usepackage{tabularx}
+\usepackage{geometry}
+\usepackage{listings}
+\geometry{ a4paper, total={170mm,257mm}, left=20mm, top=20mm,}
+
+\usepackage[style=apa, backend=biber]{biblatex}
+\addbibresource{references.bib}
+
+
+\include{setup}
+
+
+\begin{document}
+	\authorsaffiliations{
+	Instituto Tecnológico de Costa Rica\\
+	Unidad de Computación
+	}
+	\course{Sistemas de información geográfica
+	}
+	\title{Segundo proyecto programado\\{\normalsize Documentación externa}}
+	\shorttitle{}
+	\authorsnames{José Daniel Villegas Paniagua}
+	\campus{San Carlos}
+	\duedate{18 de noviembre del 2021}
+	\maketitle
+	
+	\renewcommand{\contentsname}{\raggedright\LARGEÍndice}
+	\tableofcontents
+	\newpage
+	%\include{section_setup}
+	
+	
+	\input{segmentos/0-introduccion}
+	
+	\input{segmentos/1-analisis_problema}
+	
+	\input{segmentos/2-solucion_problema}
+	
+	\input{segmentos/3-analisis_resultados}
+	
+	\input{segmentos/4-conclusiones}
+	
+	\input{segmentos/5-recomendaciones}
+	
+	\newpage
+	\nocite{*}
+	\addcontentsline{toc}{section}{Referencias}
+	\printbibliography
+\end{document}
