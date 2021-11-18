@@ -15,8 +15,13 @@ Aplicación Web que le ofrece a sus usuarios información sobre las rutas de bus
 
 # Base de datos
 
+## Opcion 1
+
 - Primeramente se deben agregar las [extensiones](sql_scripts/extensiones.sql) a la base de datos.
-- Insertar los datos los datos de la ARESEP y OSM con el comando ```ogr2ogr -f "PostgreSQL" PG:"dbname=pr2gis user=postgres" .geojson```
+- Insertar los datos los datos de la [ARESEP](sql_scripts/backup/aresep.geojson) y [OSM](sql_scripts/backup/osmpr.geojson) con el comando ```ogr2ogr -f "PostgreSQL" PG:"dbname=pr2gis user=postgres" .geojson```
 - Correr el codigo en [tablas](sql_scripts/tablas.sql)
 - Ejecutar [insertar_paradas_aresep](sql_scripts/insert_parada_aresep.sql) para crear la relación entre parada &harr; ruta
 - [filtado_calles] se encarga de hacer la relación calles&harr;rutas además de crear la topologia y agregar el costo a las calles.
+
+## Opcion 2
+- Cargar el [backup](sql_scripts/backup/backup.sql)
