@@ -63,8 +63,28 @@ app.get("/get-paradas",function(req,res){
   });
 });
 
+//dijkstra
 
+app.post("/dijkstra",function(req,res){
+  let cred=JSON.parse(req.cookies.conexion);
+  let body=req.body;
+  console.log(body.ini+','+body.des);
+  
+  let pool = new Pool(cred);
+  pool.connect((err, client, release) => {
+    if (err) {
+      return console.error('Error acquiring client', err.stack)
+    }
+    client.query('select * FROM dijkstra('+body.ini+','+body.des+')', (err, result) => {
+      release()
+      if (err) {
+        return console.error('Error executing query', err.stack)
+      }
+      res.json(result.rows[0]);
+    })
+  });
 
+});
 
 //------------------------------------------------------
 app.listen(port, () => {

@@ -1,28 +1,45 @@
 <script>
-  function onclick(){
-    console.log('temp')
+  import {getDijkstra} from "../js/get_geojson";
+  function logout() {
+    document.cookie = "conexion=;max-age=0;";
   }
+
 </script>
 
-<nav>
-  <ul>
-    <!-- svelte-ignore a11y-invalid-attribute -->
-    <li><a href="#" on:click={onclick}>Home</a></li>
-    <li>Page 1</li>
-    <li>Page 2</li>
-    <li>Page 3</li>
-  </ul>
-</nav>
+<div class={"nav"}>
+  <!-- svelte-ignore a11y-invalid-attribute -->
+  <a href="#" on:click={getDijkstra}>Ruta más corta</a>
+  <div class={"nav-right"}>
+    <a href="/" on:click={logout}>Salir</a>
+  </div>
+</div>
 
 <style>
-  ul{
-    list-style-type: none;
+  .nav {
+    background: black;
   }
-  li{
-    width: 10%;
+
+  .nav a {
+    color: white;
+    background-color: black;
+    text-align: center;
+    padding: 25px 25px;
+    text-decoration: none;
+    font-size: 25px;
+
+    transition: background-color 0.8s ease,
+    color 0.2s linear;
   }
-  ul {
-    display: flex;
-    flex-direction: row;
+
+  .nav a:hover {
+    background-color: white;
+    color: black;
+    
+    transition: background-color 0.8s ease,
+    color 0.8s linear;
+  }
+
+  .nav-right {
+    float: right;
   }
 </style>
